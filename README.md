@@ -1,9 +1,10 @@
-##ESP32 based joystick-like control
+## ESP32 based joystick-like control
 
 Micropython code for ESP32
 
 
-##Setup
+## Setup
+```text
 ┌───────────────┐        ┌───────────────┐
 │   ROOK        │  FOG   │   RELAIS      │
 │  MACHINE      ├────────►  (MAINS SW)   │
@@ -55,4 +56,4 @@ Micropython code for ESP32
 └───────▲───────┘
         │
    HDMI_IN  ◄──────────── from PC HDMI_OUT
-
+```
