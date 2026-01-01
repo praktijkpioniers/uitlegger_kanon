@@ -1,0 +1,6 @@
+*
+!.gitignore
+!README.md
+!esp32
+!esp32/*.py
+
