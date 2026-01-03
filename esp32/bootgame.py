@@ -1,6 +1,8 @@
 # bootgame.py
 import time
 
+import net_setup
+
 import pins_io
 from interface import Interface
 from sensors import Sensors
@@ -111,4 +113,5 @@ def main():
 
 
 main()
+
 

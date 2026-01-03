@@ -21,7 +21,7 @@ MPU_I2C_FREQ = 400_000
 MPU_ADDR = 0x68
 
 # --- Sensors cadence
-SENSORS_RATE_HZ = 1
+SENSORS_RATE_HZ = 12
 
 # --- Button
 BUTTON_PIN = 14
@@ -50,7 +50,7 @@ SERIAL_TX_PIN = None      # set if needed
 SERIAL_RX_PIN = None      # set if needed
 
 # --- UDP transport config (optional)
-UDP_ENABLED = False
+UDP_ENABLED = True
 UDP_BIND_PORT = 7777
 UDP_SEND_HOST = "255.255.255.255"
 UDP_SEND_PORT = 7777
@@ -66,6 +66,7 @@ DEMO_RELAY_B = 3     # fan
 DEMO_SMOKE_S = 0.5
 DEMO_FAN_S = 5.0
 DEMO_FAN_LEAD_S = 0.5
+
 
 
 

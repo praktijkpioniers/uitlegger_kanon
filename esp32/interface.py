@@ -2,6 +2,36 @@
 import pins_io
 import ndjson_prefix as ndj
 
+import time
+
+CLIENT_TTL_MS = 3 * 60 * 1000  # 3 minutes
+
+class ClientRegistry:
+    def __init__(self):
+        # key: (ip, port) -> last_seen_ms
+        self._clients = {}
+
+    def note_seen(self, addr):
+        # addr = (ip, port)
+        now = time.ticks_ms()
+        self._clients[addr] = now
+
+    def prune(self):
+        now = time.ticks_ms()
+        dead = []
+        for addr, last in self._clients.items():
+            if time.ticks_diff(now, last) > CLIENT_TTL_MS:
+                dead.append(addr)
+        for addr in dead:
+            del self._clients[addr]
+
+    def active(self):
+        self.prune()
+        return list(self._clients.keys())
+
+clients = ClientRegistry()
+        
+        
 class Interface:
     def __init__(self, prefix=pins_io.NDJSON_PREFIX):
         self.prefix = prefix
@@ -100,6 +130,9 @@ class Interface:
             try:
                 payload = ndj.encode_bytes(obj, prefix=self.prefix)
                 self._udp.sendto(payload, (pins_io.UDP_SEND_HOST, pins_io.UDP_SEND_PORT))
+                for addr in clients.active():
+                    self._udp.sendto(payload, addr)
+                
             except Exception as e:
                 if self.debug:
                     print("UDP send failed:", repr(e))
@@ -165,10 +198,14 @@ class Interface:
             except Exception:
                 break
 
+            clients.note_seen(addr)
+                
             st, obj = ndj.try_parse_line(data, prefix=self.prefix)
             if st == "ok" and isinstance(obj, dict):
                 obj["_src"] = {"udp": addr}
                 out.append(obj)
 
         return out
+
+
 
