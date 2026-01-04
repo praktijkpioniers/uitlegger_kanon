@@ -3,6 +3,7 @@
 #esp.osdebug(None)
 #import webrepl
 #webrepl.start()
-#import bootgame
+import bootgame
+
 
 

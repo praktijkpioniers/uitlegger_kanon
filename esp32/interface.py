@@ -6,6 +6,8 @@ import time
 
 CLIENT_TTL_MS = 3 * 60 * 1000  # 3 minutes
 
+SPAM_SERIAL = False #Set to true for sensor data on serial port
+
 class ClientRegistry:
     def __init__(self):
         # key: (ip, port) -> last_seen_ms
@@ -112,14 +114,16 @@ class Interface:
         # serial out
         if self._uart is not None:
             try:
-                self._uart.write(line.encode("utf-8") + b"\n")
+                if SPAM_SERIAL:
+                    self._uart.write(line.encode("utf-8") + b"\n")
             except Exception as e:
                 if self.debug:
                     print("UART write failed:", repr(e))
         else:
             # USB REPL stdout
             try:
-                print(line)
+                if SPAM_SERIAL:
+                    print(line)
             except Exception as e:
                 if self.debug:
                     # last resort: nothing else we can do
@@ -199,13 +203,18 @@ class Interface:
                 break
 
             clients.note_seen(addr)
+            print (f"Received {data=}")
                 
             st, obj = ndj.try_parse_line(data, prefix=self.prefix)
             if st == "ok" and isinstance(obj, dict):
+                print (f"Accepted command {obj=}")            
                 obj["_src"] = {"udp": addr}
                 out.append(obj)
+            else:
+                print (f"Failed parse {obj=}")
 
         return out
+
 
 
 

@@ -24,7 +24,7 @@ def main():
     button = Button()
 
     DEMO = bool(DEMO_MODE)
-    REPEAT = bool(getattr(pins_io, "DEMO_REPEAT", True))
+    REPEAT = False #bool(getattr(pins_io, "DEMO_REPEAT", True))
 
     # Timeline knobs
     FUSE_S = float(getattr(pins_io, "DEMO_FUSE_S", 8.0))
@@ -75,7 +75,7 @@ def main():
         if evt:
             iface.emit(evt)
 
-        if not DEMO:
+        if not DEMO: 
             for msg in iface.poll_messages():
                 if isinstance(msg, dict) and "cmd" in msg:
                     ok = outputs.handle_cmd(msg)
@@ -101,10 +101,12 @@ def main():
 
             elif demo_state == "flash":
                 # We don't track flash completion here; effect runs its own envelope.
-                if REPEAT:
-                    start_cycle()
-                else:
-                    demo_set_state("idle")
+                #if REPEAT:
+                #    start_cycle()
+                #else:
+                #    demo_set_state("idle")
+                demo_set_state("idle")
+                DEMO = False
 
         now = time.ticks_ms()
         if time.ticks_diff(now, last_yield) >= 5:
@@ -113,5 +115,6 @@ def main():
 
 
 main()
+
 
 
